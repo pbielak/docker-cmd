@@ -1,0 +1,14 @@
+[package]
+name = "docker-cmd"
+version = "0.1.0"
+authors = ["pbielak"]
+edition = "2018"
+
+[dependencies]
+console = "0.7.5"
+dialoguer = "0.3.0"
+nix = "0.13.0"
+shiplift = "0.4"
+structopt = "0.2"
+tabwriter = "1.1.0"
+tokio = "0.1"
