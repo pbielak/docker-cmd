@@ -8,6 +8,28 @@ pub struct DockerClientWrapper {
     docker: Docker,
 }
 
+impl DockerClientWrapper {
+    pub fn new() -> DockerClientWrapper {
+        DockerClientWrapper {
+            docker: Docker::new(),
+        }
+    }
+
+    pub fn get_containers(self) -> Result<Vec<ContainerInfo>, DockerClientError> {
+        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
+        let containers = runtime.block_on(self.docker.containers().list(&Default::default()));
+
+        let container_info: Vec<ContainerInfo> =
+            containers?.into_iter().map(ContainerInfo::from).collect();
+
+        if container_info.is_empty() {
+            return Err(DockerClientError::NoRunningContainers);
+        }
+
+        Ok(container_info)
+    }
+}
+
 #[derive(Debug, Display)]
 pub enum DockerClientError {
     #[display(fmt = "Docker daemon is not running")]
@@ -35,27 +57,5 @@ impl From<slError> for DockerClientError {
             }
             _ => DockerClientError::Other { msg: e.to_string() },
         }
-    }
-}
-
-impl DockerClientWrapper {
-    pub fn new() -> DockerClientWrapper {
-        DockerClientWrapper {
-            docker: Docker::new(),
-        }
-    }
-
-    pub fn get_containers(self) -> Result<Vec<ContainerInfo>, DockerClientError> {
-        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
-        let containers = runtime.block_on(self.docker.containers().list(&Default::default()));
-
-        let container_info: Vec<ContainerInfo> =
-            containers?.into_iter().map(ContainerInfo::from).collect();
-
-        if container_info.is_empty() {
-            return Err(DockerClientError::NoRunningContainers);
-        }
-
-        Ok(container_info)
     }
 }
