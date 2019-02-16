@@ -3,6 +3,10 @@ name = "docker-cmd"
 version = "0.1.0"
 authors = ["pbielak"]
 edition = "2018"
+description = "A simple CLI tool for running commands in Docker containers."
+repository = "https://github.com/pbielak/docker-cmd"
+readme = "README.md"
+license = "MIT"
 
 [dependencies]
 console = "0.7.5"
