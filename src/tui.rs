@@ -7,25 +7,17 @@ use tabwriter::TabWriter;
 
 use crate::container_info::ContainerInfo;
 
-pub struct TUI {
-    header: String,
-    containers: Vec<ContainerInfo>,
-}
-
-impl TUI {
-    pub fn new(containers: &[ContainerInfo]) -> TUI {
-        TUI {
-            header: ContainerInfo::FIELDS.join("\t").to_string(),
-            containers: containers.to_vec(),
-        }
+pub fn get_selected_container(containers: &[ContainerInfo]) -> ContainerInfo {
+    if containers.len() == 1 {
+        return containers[0].clone();
     }
 
-    pub fn get_selected_container(self) -> ContainerInfo {
-        let (header, containers) = align_tabs(&self.header, &self.containers);
-        let container_idx = get_selection(&header, &containers);
+    let header = ContainerInfo::FIELDS.join("\t").to_string();
 
-        self.containers[container_idx].clone()
-    }
+    let (header_str, containers_str) = align_tabs(&header, &containers);
+    let container_idx = get_selection(&header_str, &containers_str);
+
+    containers[container_idx].clone()
 }
 
 fn align_tabs(header: &str, container_info: &[ContainerInfo]) -> (String, Vec<String>) {

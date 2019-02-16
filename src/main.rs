@@ -12,20 +12,16 @@ mod docker;
 mod exec;
 mod tui;
 
-use docker::DockerClientWrapper;
-use exec::exec_cmd;
-use tui::TUI;
-
 fn main() {
     let args = args::CliArgs::from_args();
 
-    let client = DockerClientWrapper::new(&args.docker_address);
+    let client = docker::DockerClientWrapper::new(&args.docker_address);
 
     match client.get_containers() {
         Err(err) => println!("{}", err),
         Ok(containers) => {
-            let container = TUI::new(&containers).get_selected_container();
-            exec_cmd(&container.id, &args.command);
+            let container = tui::get_selected_container(&containers);
+            exec::exec_cmd(&container.id, &args.command);
         }
     }
 }
