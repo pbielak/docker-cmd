@@ -21,7 +21,7 @@ fn main() {
         Err(err) => println!("{}", err),
         Ok(containers) => {
             let container = tui::get_selected_container(&containers);
-            exec::exec_cmd(&container.id, &args.command);
+            exec::exec_cmd(container.id(), &args.command);
         }
     }
 }

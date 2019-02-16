@@ -50,10 +50,8 @@ impl DockerClientWrapper {
         let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
         let containers = runtime.block_on(self.docker.containers().list(&Default::default()));
 
-        let container_info: Vec<ContainerInfo> = containers?
-            .into_iter()
-            .map(|c| ContainerInfo::new(&c))
-            .collect();
+        let container_info: Vec<ContainerInfo> =
+            containers?.into_iter().map(ContainerInfo::from).collect();
 
         if container_info.is_empty() {
             return Err(DockerClientError::NoRunningContainers);
