@@ -24,9 +24,7 @@ fn main() {
     match client.get_containers() {
         Err(err) => println!("{}", err),
         Ok(containers) => {
-            let tui = TUI::new(&containers);
-            let container = tui.get_selected_container();
-
+            let container = TUI::new(&containers).get_selected_container();
             exec_cmd(&container.id, &args.command);
         }
     }
