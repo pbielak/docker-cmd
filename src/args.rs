@@ -1,6 +1,4 @@
-/*
-Command line args used by supervisor and sorting actor
-*/
+/// Command line args
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "basic")]

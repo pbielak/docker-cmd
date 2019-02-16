@@ -1,6 +1,4 @@
-/*
-Container info for TUI
-*/
+/// Container info for TUI
 use std::clone;
 use std::fmt;
 

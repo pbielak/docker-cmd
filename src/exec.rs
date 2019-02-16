@@ -1,6 +1,4 @@
-/*
-Process transformation to actual docker call
-*/
+/// Process transformation to actual docker call
 use std::ffi::CString;
 
 use nix::unistd::*;
