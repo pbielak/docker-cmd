@@ -1,4 +1,5 @@
 /// Wrapper for Docker client
+use shiplift::errors::Error as slError;
 use shiplift::Docker;
 
 use crate::container_info::ContainerInfo;
@@ -19,12 +20,10 @@ pub enum DockerClientError {
     Other { msg: String },
 }
 
-use shiplift::errors::Error;
-
-impl From<Error> for DockerClientError {
-    fn from(e: Error) -> Self {
+impl From<slError> for DockerClientError {
+    fn from(e: slError) -> Self {
         match e {
-            Error::Hyper(e_msg) => {
+            slError::Hyper(e_msg) => {
                 let e_msg: String = e_msg.to_string();
                 if e_msg.contains("an error occurred trying to connect: Connection refused") {
                     return DockerClientError::NoDockerDaemonRunning;
