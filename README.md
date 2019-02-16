@@ -1,4 +1,6 @@
 # docker-cmd
+[![crates.io](http://meritbadge.herokuapp.com/docker-cmd)](https://crates.io/crates/docker-cmd) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 A simple CLI tool for running commands in Docker containers.
 
 ### Quickstart
