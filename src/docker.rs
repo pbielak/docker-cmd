@@ -40,11 +40,7 @@ impl From<Error> for DockerClientError {
 }
 
 impl DockerClientWrapper {
-    pub fn new(docker_address: &str) -> DockerClientWrapper {
-        if !docker_address.is_empty() {
-            std::env::set_var("DOCKER_HOST", docker_address);
-        }
-
+    pub fn new() -> DockerClientWrapper {
         DockerClientWrapper {
             docker: Docker::new(),
         }
