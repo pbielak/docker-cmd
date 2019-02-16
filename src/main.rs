@@ -1,6 +1,6 @@
-/*
-docker-cmd command line tool
-*/
+/// docker-cmd command line tool
+#[macro_use]
+extern crate derive_more;
 #[macro_use]
 extern crate structopt;
 
@@ -20,15 +20,14 @@ fn main() {
     let args = args::CliArgs::from_args();
 
     let client = DockerClientWrapper::new(&args.docker_address);
-    let containers = client.get_containers();
 
-    if containers.is_empty() {
-        println!("No running containers");
-        std::process::exit(0);
+    match client.get_containers() {
+        Err(err) => println!("{}", err),
+        Ok(containers) => {
+            let tui = TUI::new(&containers);
+            let container = tui.get_selected_container();
+
+            exec_cmd(&container.id, &args.command);
+        }
     }
-
-    let tui = TUI::new(&containers);
-    let container = tui.get_selected_container();
-
-    exec_cmd(&container.id, &args.command);
 }

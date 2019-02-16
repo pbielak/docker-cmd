@@ -1,6 +1,4 @@
-/*
-Implementation for TUI of docker-cmd
-*/
+/// Implementation for TUI of docker-cmd
 use std::io::Write;
 
 use console::Term;
@@ -15,9 +13,9 @@ pub struct TUI {
 }
 
 impl TUI {
-    pub fn new(containers: &Vec<ContainerInfo>) -> TUI {
+    pub fn new(containers: &[ContainerInfo]) -> TUI {
         TUI {
-            header: format!("{}", ContainerInfo::FIELDS.join("\t")),
+            header: ContainerInfo::FIELDS.join("\t").to_string(),
             containers: containers.to_vec(),
         }
     }
@@ -30,8 +28,8 @@ impl TUI {
     }
 }
 
-fn align_tabs(header: &String, container_info: &Vec<ContainerInfo>) -> (String, Vec<String>) {
-    let containers: Vec<String> = container_info.into_iter().map(|c| c.to_string()).collect();
+fn align_tabs(header: &str, container_info: &[ContainerInfo]) -> (String, Vec<String>) {
+    let containers: Vec<String> = container_info.iter().map(|ci| ci.to_string()).collect();
 
     let mut tw = TabWriter::new(vec![]);
     tw.write_all(format!("{}\n", header).as_bytes()).unwrap();
@@ -40,7 +38,7 @@ fn align_tabs(header: &String, container_info: &Vec<ContainerInfo>) -> (String, 
 
     let aligned: String = String::from_utf8(tw.into_inner().unwrap()).unwrap();
 
-    let parts: Vec<String> = aligned.split("\n").map(|s| String::from(s)).collect();
+    let parts: Vec<String> = aligned.split('\n').map(String::from).collect();
 
     let header: String = format!("  {}", parts[0].clone());
     let info: Vec<String> = parts[1..].to_vec();
@@ -48,7 +46,7 @@ fn align_tabs(header: &String, container_info: &Vec<ContainerInfo>) -> (String, 
     (header, info)
 }
 
-fn get_selection<T>(header: &str, items: &Vec<T>) -> usize
+fn get_selection<T>(header: &str, items: &[T]) -> usize
 where
     T: std::fmt::Display,
 {
