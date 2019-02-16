@@ -2,11 +2,14 @@
 name = "docker-cmd"
 version = "0.1.0"
 authors = ["pbielak"]
-edition = "2018"
-description = "A simple CLI tool for running commands in Docker containers."
-repository = "https://github.com/pbielak/docker-cmd"
-readme = "README.md"
 license = "MIT"
+description = "A simple CLI tool for running commands in Docker containers."
+readme = "README.md"
+homepage = "https://github.com/pbielak/docker-cmd"
+repository = "https://github.com/pbielak/docker-cmd"
+keywords = ["cli", "docker", "command"]
+categories = ["command-line-utilities"]
+edition = "2018"
 
 [dependencies]
 console = "0.7.5"
