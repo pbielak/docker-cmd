@@ -1,6 +1,6 @@
 [package]
 name = "docker-cmd"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["pbielak"]
 license = "MIT"
 description = "A simple CLI tool for running commands in Docker containers."
