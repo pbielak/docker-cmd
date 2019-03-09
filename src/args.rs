@@ -1,4 +1,4 @@
-/// Command line args
+// Command line args
 
 #[derive(StructOpt, Debug)]
 pub struct CliArgs {

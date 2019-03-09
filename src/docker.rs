@@ -1,4 +1,4 @@
-/// Wrapper for Docker client
+// Wrapper for Docker client
 use std::process::Command;
 
 use crate::container_info::ContainerInfo;

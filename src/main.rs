@@ -1,4 +1,4 @@
-/// docker-cmd command line tool
+// docker-cmd command line tool
 #[macro_use]
 extern crate derive_more;
 #[macro_use]

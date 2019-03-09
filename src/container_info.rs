@@ -1,4 +1,4 @@
-/// Container info for TUI
+// Container info for TUI
 use std::fmt;
 
 #[derive(Clone)]

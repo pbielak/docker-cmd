@@ -1,4 +1,4 @@
-/// Implementation for TUI of docker-cmd
+// Implementation for TUI of docker-cmd
 use std::io::Write;
 
 use console::Term;
