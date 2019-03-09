@@ -1,8 +1,6 @@
 /// Container info for TUI
 use std::fmt;
 
-use shiplift::rep::Container;
-
 #[derive(Clone)]
 pub struct ContainerInfo {
     id: String,
@@ -12,7 +10,6 @@ pub struct ContainerInfo {
 }
 
 impl ContainerInfo {
-    const MAX_ID_LENGTH: usize = 12;
     pub const FIELDS: [&'static str; 4] = ["ID", "IMAGE", "COMMAND", "STATUS"];
 
     pub fn new(id: String, image: String, command: String, status: String) -> ContainerInfo {
@@ -26,17 +23,6 @@ impl ContainerInfo {
 
     pub fn id(&self) -> &str {
         self.id.as_str()
-    }
-}
-
-impl From<Container> for ContainerInfo {
-    fn from(c: Container) -> Self {
-        ContainerInfo::new(
-            c.id[..ContainerInfo::MAX_ID_LENGTH].to_string(),
-            c.image,
-            c.command,
-            c.status,
-        )
     }
 }
 

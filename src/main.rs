@@ -15,9 +15,7 @@ mod tui;
 fn main() {
     let args = args::CliArgs::from_args();
 
-    let client = docker::DockerClientWrapper::new();
-
-    match client.get_containers() {
+    match docker::get_containers() {
         Err(err) => println!("{}", err),
         Ok(containers) => {
             let container = tui::get_selected_container(&containers);

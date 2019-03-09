@@ -1,33 +1,45 @@
 /// Wrapper for Docker client
-use shiplift::errors::Error as slError;
-use shiplift::Docker;
+use std::process::Command;
 
 use crate::container_info::ContainerInfo;
 
-pub struct DockerClientWrapper {
-    docker: Docker,
-}
+pub fn get_containers() -> Result<Vec<ContainerInfo>, DockerClientError> {
+    let cmd_out_raw = Command::new("docker")
+        .arg("ps")
+        .arg("--format")
+        .arg("{{.ID}};{{.Image}};{{.Command}};{{.Status}}")
+        .output()?;
 
-impl DockerClientWrapper {
-    pub fn new() -> DockerClientWrapper {
-        DockerClientWrapper {
-            docker: Docker::new(),
-        }
+    if !cmd_out_raw.status.success() {
+        let stderr = String::from_utf8(cmd_out_raw.stderr)?;
+        return Err(DockerClientError::from(stderr));
     }
 
-    pub fn get_containers(self) -> Result<Vec<ContainerInfo>, DockerClientError> {
-        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
-        let containers = runtime.block_on(self.docker.containers().list(&Default::default()));
+    let stdout_raw = String::from_utf8(cmd_out_raw.stdout)?;
+    let stdout = stdout_raw.trim();
 
-        let container_info: Vec<ContainerInfo> =
-            containers?.into_iter().map(ContainerInfo::from).collect();
-
-        if container_info.is_empty() {
-            return Err(DockerClientError::NoRunningContainers);
-        }
-
-        Ok(container_info)
+    if stdout.is_empty() {
+        return Err(DockerClientError::NoRunningContainers);
     }
+
+    let container_info: Vec<ContainerInfo> = stdout
+        .split('\n')
+        .map(|line| {
+            let data: Vec<&str> = line.split(';').collect();
+            ContainerInfo::new(
+                data[0].to_string(),
+                data[1].to_string(),
+                data[2].to_string(),
+                data[3].to_string(),
+            )
+        })
+        .collect();
+
+    if container_info.is_empty() {
+        return Err(DockerClientError::NoRunningContainers);
+    }
+
+    Ok(container_info)
 }
 
 #[derive(Debug, Display)]
@@ -42,20 +54,24 @@ pub enum DockerClientError {
     Other { msg: String },
 }
 
-impl From<slError> for DockerClientError {
-    fn from(e: slError) -> Self {
-        match e {
-            slError::Hyper(e_msg) => {
-                let e_msg: String = e_msg.to_string();
-                if e_msg.contains("an error occurred trying to connect: Connection refused") {
-                    return DockerClientError::NoDockerDaemonRunning;
-                }
-
-                DockerClientError::Other {
-                    msg: e_msg.to_string(),
-                }
-            }
-            _ => DockerClientError::Other { msg: e.to_string() },
+impl From<String> for DockerClientError {
+    fn from(s: String) -> Self {
+        if s.contains("Cannot connect to the Docker daemon at") {
+            return DockerClientError::NoDockerDaemonRunning;
         }
+
+        DockerClientError::Other { msg: s }
+    }
+}
+
+impl From<std::string::FromUtf8Error> for DockerClientError {
+    fn from(e: std::string::FromUtf8Error) -> Self {
+        DockerClientError::Other { msg: e.to_string() }
+    }
+}
+
+impl From<std::io::Error> for DockerClientError {
+    fn from(e: std::io::Error) -> Self {
+        DockerClientError::Other { msg: e.to_string() }
     }
 }
