@@ -12,7 +12,7 @@ pub fn get_selected_container(containers: &[ContainerInfo]) -> ContainerInfo {
         return containers[0].clone();
     }
 
-    let header = ContainerInfo::FIELDS.join("\t").to_string();
+    let header = ContainerInfo::FIELDS.join("\t");
 
     let (header_str, containers_str) = align_tabs(&header, &containers);
     let container_idx = get_selection(&header_str, &containers_str);
