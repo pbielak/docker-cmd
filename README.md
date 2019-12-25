@@ -31,3 +31,8 @@ The default executed command is `/bin/bash`, but you can pass any command to exe
 
 Note that if there is only one container, the tool will automatically use this container 
 and launch the desired command in it.
+
+### Changelog
+* v0.3
+   - Added function for locating Docker binary, instead of hardcoded value
+   - Applied clippy hint (unnecessary string cloning)
