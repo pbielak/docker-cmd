@@ -1,10 +1,11 @@
 // Process transformation to actual docker call
 use std::ffi::CString;
 
-use nix::unistd::*;
+use nix::unistd::execv;
+use which::which;
 
 pub fn exec_cmd(container_id: &str, command: &str) {
-    let docker_binary: &str = "/usr/local/bin/docker";
+    let docker_binary: String = find_binary("docker");
 
     let raw_args: Vec<&str> = vec!["docker", "exec", "-it", container_id, command];
 
@@ -17,5 +18,12 @@ pub fn exec_cmd(container_id: &str, command: &str) {
     match execv(&cmd, &args[..]) {
         Ok(_) => unreachable!(),
         Err(e) => println!("Error on execv: {:?}", e),
+    }
+}
+
+fn find_binary(binary: &str) -> String {
+    match which(binary) {
+        Ok(bin) => bin.into_os_string().into_string().unwrap(),
+        Err(e) => panic!("\"{:?}\" binary not found: {:?}", binary, e),
     }
 }
